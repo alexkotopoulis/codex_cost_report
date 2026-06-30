@@ -70,6 +70,9 @@ function App() {
     return <main class="shell"><div class="notice">Loading token usage...</div></main>;
   }
 
+  const selectedSummary = overview.sessions.find((item) => item.id === selectedSessionId) || null;
+  const detailSession = session || selectedSummary;
+
   return (
     <main class="shell">
       <header class="topbar">
@@ -175,14 +178,16 @@ function App() {
         </section>
 
         <aside class="detail" aria-label="Session detail">
-          {session ? <SessionDetail session={session} /> : <div class="notice">Select a session</div>}
+          {detailSession ? <SessionDetail session={detailSession} displayScale={displayScale} /> : <div class="notice">Select a session</div>}
         </aside>
       </section>
     </main>
   );
 }
 
-function SessionDetail({ session }) {
+function SessionDetail({ session, displayScale }) {
+  const prompts = session.prompts || [];
+
   return (
     <>
       <div class="section-head compact-head">
@@ -210,11 +215,11 @@ function SessionDetail({ session }) {
       </dl>
       <div class="prompt-head">
         <p class="eyebrow">Prompts</p>
-        <span>{session.prompts.length}</span>
+        <span>{prompts.length}</span>
       </div>
       <div class="prompts">
-        {session.prompts.length === 0 && <pre>No user prompt was found in this session.</pre>}
-        {session.prompts.map((prompt, index) => (
+        {prompts.length === 0 && <pre>No user prompt was found in this session.</pre>}
+        {prompts.map((prompt, index) => (
           <pre key={index}>{prompt}</pre>
         ))}
       </div>
